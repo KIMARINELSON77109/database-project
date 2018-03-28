@@ -1,20 +1,57 @@
 {% extends "base.html" %}
 
 {% block main %}
-  <div class="login-form center-block">
-    <h2>Please Log in</h2>
-    {% include 'flash_messages.html' %}
-    <form action="{{ url_for('login') }}" method="post">
-      {{ form.csrf_token }}
-      <div class="form-group">
-        {{ form.username.label }}
-        {{ form.username(class='form-control', placeholder="Enter your username") }}
+  <section class="page-section cta">
+      <div class="container">
+        <div class="row">
+          <div class="col-xl-9 mx-auto">
+            <div class="cta-inner text-center rounded">
+              <h2 class="section-heading mb-5">
+                <span class="section-heading-lower">sign in</span>
+              </h2>
+              <form name ="reg_form" id= "reg__form" method="post">
+                  <div class="modal-dialog">
+                      <div class="modal-content">
+                           <div class="modal-body">
+                               <div class="form-group">
+                                  {{form.email(class="form-control input-lg", placeholder="firstname@mealPlan.com")}}
+                                   <span  class="error" id="uname_error"></span>
+                               </div>
+                  
+                               <div class="form-group">
+                                   {{form.password(class="form-control input-lg", placeholder="Password")}}
+                                   <span class="error" id="pass_error"></span>
+                               </div>
+                  
+                               <div class="form-group">
+                                   <input type="submit" class="btn btn-block btn-lg btn-primary" id = "sign-in" value="sign in"/>
+                               </div>
+                               
+                               <div class="form-group">
+                                  <!-- error reporting goes here -->
+                                  <div class="message" id="log-msg"></div>
+          		            </div>
+                          </div>
+                      </div>
+                  </div>
+              </form>
+              <p class="address mb-5">
+                <em>
+                  <strong>University of the West Indies</strong>
+                  <br>
+                  Mona, Kingston
+                </em>
+              </p>
+              <p class="mb-0">
+                <small>
+                  <em>Email us anything</em>
+                </small>
+                <br>
+                ultimate_mealPlanner@gmail.com
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="form-group">
-        {{ form.password.label }}
-        {{ form.password(class='form-control') }}
-      </div>
-      <button type="submit" name="submit" class="btn btn-primary btn-block">Log in</button>
-    </form>
-  </div>
+    </section>
 {% endblock %}

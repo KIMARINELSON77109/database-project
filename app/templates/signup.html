@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+{%block js%}
+  <script src="{{url_for('static', filename='js/dob.js')}}"></script>
+{% endblock %}
+<section class="page-section cta">
+      <div class="container">
+        <div class="row">
+          <div class="col-xl-9 mx-auto">
+            <div class="cta-inner text-center rounded">
+              <h2 class="section-heading mb-5">
+                <span class="section-heading-lower">Registration</span>
+              </h2>
+              <form name ="reg_form" id= "reg__form" method="post">
+                  <div class="modal-dialog">
+                      <div class="modal-content">
+                           <div class="modal-body">
+                               <div class="form-group">
+                                   {{form.firstname(class="form-control input-lg", placeholder="Firstname")}}
+                                   <span class="error" id="fname_error"></span>
+                               </div>
+                               
+                               <div class="form-group">
+                                   {{form.lastname(class="form-control input-lg", placeholder="lastname")}}
+                                   <span class="error" id="lname_error"></span>
+                               </div>
+                               
+                               <div class="form-group">
+                                   <label for="DOB">Year of Birth: </label>
+                                   {{form.D_O_B(class="form-control input-lg btn btn-default dropdown-toggle")}}
+                                   <span class="error" id="DOB_error"></span>
+                               </div>
+                               
+                               <div class="form-group">
+                                   {{form.email(class="form-control input-lg", placeholder="firstname@mealPlan.com")}}
+                                   <span  class="error" id="uname_error"></span>
+                               </div>
+                               
+                               <div class="form-group">
+                                   {{form.phone(class="form-control input-lg", placeholder="Mobile number")}}
+                                   <span class="error" id="mobile_error"></span>
+                               </div>
+                  
+                               <div class="form-group">
+                                   {{form.password(class="form-control input-lg",placeholder="Password")}}
+                                   <span class="error" id="pass_error"></span>
+                               </div>
+                               
+                               <div class="form-group">
+                                   <input type="submit" class="btn btn-block btn-lg btn-primary" id = "register" value="register"/>
+                               </div>
+                               
+                               <div class="form-group">
+                                  <!-- error reporting goes here -->
+                                  <div class="message" id="log-msg"></div>
+          		            </div>
+                          </div>
+                      </div>
+                  </div>
+              </form>
+              <p class="address mb-5">
+                <em>
+                  <strong>University of the West Indies</strong>
+                  <br>
+                  Mona, Kingston
+                </em>
+              </p>
+              <p class="mb-0">
+                <small>
+                  <em>Email us anything</em>
+                </small>
+                <br>
+                ultimate_mealPlanner@gmail.com
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+{% endblock %}

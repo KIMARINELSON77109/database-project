@@ -5,12 +5,14 @@ Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
 
-from app import app, db, login_manager
-from flask import render_template, request, redirect, url_for, flash
+from app import app,login_manager, db
+from flask import render_template, request, redirect, url_for, flash,session,jsonify
 from flask_login import login_user, logout_user, current_user, login_required
-from forms import LoginForm
-from models import UserProfile
+from forms import LoginForm, SignUpForm
+from models import User
+from sqlalchemy import create_engine
 
+engine = create_engine('mysql://root:@localhost:3306/ultimate_meal_planner')
 
 ###
 # Routing for your application.
@@ -27,54 +29,116 @@ def about():
     """Render the website's about page."""
     return render_template('about.html')
 
-
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    form = LoginForm()
-    # change this to actually validate the entire form submission
-    # and not just one field
-    if request.method == "POST" and form.validate_on_submit():
-            # Get the username and password values from the form.
-            username = form.username.data
+@app.route('/mealPlan',methods=['GET','POST'])
+def mealplan():
+    return render_template('meal_plan.html')
+    
+@app.route('/add_recipe',methods=['GET','POST'])
+def add_recipe():
+    return render_template('create_recipe.html')
+    
+@app.route('/signup',methods=['GET' , 'POST'])
+def signup():
+    form = SignUpForm(csrf_enabled=False)
+    
+    choices = [(str(x),x) for x in reversed(range(1900,2004))]
+    form.D_O_B.choices = choices
+    if request.method == 'POST':
+        
+        if form.validate_on_submit():
+            firstname = form.firstname.data
+            lastname = form.lastname.data
+            D_O_B = form.D_O_B.data
+            email = form.email.data
+            phone = form.phone.data
             password = form.password.data
-
-            # using your model, query database for a user based on the username
-            # and password submitted
-            # store the result of that query to a `user` variable so it can be
-            # passed to the login_user() method.
-            user = UserProfile.query.filter_by(username=username, password=password).first()
-
-            # get user id, load into session
-            if user is not None:
+            try:
+                user = User(firstname,lastname,D_O_B,email,phone,password)
+                db.session.add(user)
+                db.session.commit()
                 login_user(user)
-                next_page = request.args.get('next')
-            
-                # remember to flash a message to the user
-                flash('Logged in successfully.', 'success')
-                return redirect(next_page or url_for('secure_page'))  # they should be redirected to a secure-page route instead
-            flash('Username or Password is incorrect.', 'danger')
-    return render_template("login.html", form=form)
+                return redirect(url_for('about'))
+            except Exception as e:
+                print e
+                db.session.rollback()
+                flash(str(e))
+                return render_template('signup.html', form=form)
+        else:
+            flash('Error signing up')
+            render_template('signup.html' , form=form)
+    else:
+        return render_template('signup.html', form=form)
+    
+@app.route('/login' , methods=['GET' , 'POST'])
+def login():
+    form = LoginForm(csrf_enabled=False)
 
-@app.route('/secure-page')
-@login_required
-def secure_page():
-    """Render a secure page on our website that only logged in users can access."""
-    return render_template('secure_page.html')
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            email = form.email.data
+            password = form.password.data
+            try:
+                result = User.query.filter_by(email=email).first()
+                print result
+                if result is None:
+                     flash('Invalid login credentials')
+                     return render_template('login.html', form=form)
+                else:
+                    login_user(result)
+                    session['logged_in'] = True
+                    flash('You were logged in', 'success')
+                    return redirect(url_for('home'))
+            except Exception as e:
+                return str(e)
+        else:
+           return render_template('login.html' , form=form)
+    else:
+        return render_template('login.html', form=form)
 
-
+@app.route('/measurements',methods=["GET"])
+def measurements():
+    connection = engine.connect()
+    result = connection.execute("select measurement.measurement_name from measurement")
+    measurements = []
+    for row in result:
+        measurements.append(row['measurement_name'])
+    connection.close()
+    return jsonify({"measurements":measurements})
+    
+@app.route('/ingredients',methods=["GET"])
+def ingredients():
+    connection = engine.connect()
+    result = connection.execute("select * from ingredient")
+    ingredients = []
+    for row in result:
+        if row['ingredient_id'] != 96:
+            ingredients.append(row['ingredient_name'])
+    connection.close()
+    return jsonify({"ingredients":ingredients})
+    
+# @app.route('/generate_mealplan',methods=["GET"])
+# def newMealPlan():
+#     firstconnection = engine.connect()
+#     result = firstconnection.execute("select mealplanday.mealplanday_id from mealplanday")
+#     mealplandays = []
+#     for row in result:
+#         mealplandays.append(row['mealplanday_id'])
+#     firstconnection.close()
+#     return render_template("meal_plan.html")
+    
 @app.route("/logout")
 @login_required
 def logout():
     # Logout the user and end the session
-    logout_user()
+    session.pop('logged_in', None)
     flash('You have been logged out.', 'danger')
-    return redirect(url_for('home'))    
+    return redirect(url_for('about'))    
 
 # user_loader callback. This callback is used to reload the user object from
 # the user ID stored in the session
 @login_manager.user_loader
-def load_user(id):
-    return UserProfile.query.get(int(id))
+def load_user(user_id):
+    return User.query.get(user_id)
 
 ###
 # The functions below should be applicable to all Flask apps.
