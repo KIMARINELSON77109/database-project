@@ -26,3 +26,20 @@ create table recipe
 	servings         int not null,
 	primary key(recipe_id)
 ) ENGINE=INNODB;
+
+drop table if exists measurement;
+create table measurement
+(
+	measurement_id      int not null auto_increment,
+	measurement_name    varchar(15) not null,
+	primary key(measurement_id)
+) ENGINE=INNODB;
+
+drop table if exists ingredient;
+create table ingredient
+(
+	ingredient_id		int not null,
+	ingredient_name	    varchar(15) not null,
+	food_group          varchar(10) not null,
+	primary key(ingredient_id)
+) ENGINE=INNODB;

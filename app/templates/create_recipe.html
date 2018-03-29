@@ -1,10 +1,7 @@
 {% extends 'base.html' %}
 
-{%block js%}
-{% endblock %}
-
 {% block main %}
-<div class="white_bg create-recipe" style="transform: none;">
+<div class="white_bg create-recipe" style="transform: none;" ng-app="MealPlanner" ng-controller="NewRecipeCtrl">
             <div class="container margin_60" style="transform: none;">
                 <div class="main_title">
                     <h2 class="nomargin_top">Create Recipe</h2>
@@ -26,12 +23,13 @@
                                 float: left;
                               }
                               .new_ingredient select{
-                                width:30%;
+                                width:35%;
                                 float:left;
                               }
                             </style>
-                            <div id="ingred" ng-repeat="ingr in ingredient" class="new_ingredient ng-scope">
-    	                       <input class='form-control' id = 'theInput'/>
+                            {% raw %}
+                            <div ng-repeat="ingr in ingredient" class="new_ingredient ng-scope">
+    	                       <input class='form-control'/>
                                     <select class='form-control'>
                                         <option ng-repeat="measurement in measurements">
                                     		  {{ measurement }}
@@ -45,7 +43,7 @@
                                 </br>    
                             </div>
                             </br>
-                            <div id="btn_ingred" class="btn btn-success">Add New Ingredient</div>
+                            <div class="btn btn-success" ng-click="add_ingredient()">Add New Ingredient</div>
                             </br>
                             </br>
                             <div ng-repeat="instr in instructions" >
@@ -54,6 +52,7 @@
                             </br>
                                 <div class="btn btn-success" ng-click="add_instruction()">Add Instruction</div>
                         </div>
+                        {% endraw %}
                         <aside class="col-md-4 sidebar sticky-sidebar" style="position: relative; overflow: visible; box-sizing: border-box; min-height: 1px;">
                             <div class="theiaStickySidebar" style="padding-top: 0px; padding-bottom: 1px; position: static; transform: none; top: 0px; left: 849.99px;">
                                 <div class="form-group">

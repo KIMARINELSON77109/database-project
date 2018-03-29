@@ -1,0 +1,13 @@
+INSERT INTO measurement (measurement_name) VALUES ("Cup");
+INSERT INTO measurement (measurement_name) VALUES ("Teaspoon");
+INSERT INTO measurement (measurement_name) VALUES ("Tablespoon");
+INSERT INTO measurement (measurement_name) VALUES ("Pound");
+INSERT INTO measurement (measurement_name) VALUES ("Quart");
+INSERT INTO measurement (measurement_name) VALUES ("Ounce");
+INSERT INTO measurement (measurement_name) VALUES ("Pint");
+INSERT INTO measurement (measurement_name) VALUES ("Millilitre");
+INSERT INTO measurement (measurement_name) VALUES ("Litre");
+INSERT INTO measurement (measurement_name) values ('g');
+INSERT INTO measurement (measurement_name) values ('cup');
+INSERT INTO measurement (measurement_name) values ('kg');
+INSERT INTO measurement (measurement_name) values ('n/a');

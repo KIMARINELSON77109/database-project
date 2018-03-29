@@ -41,8 +41,6 @@ def add_recipe():
 def signup():
     form = SignUpForm(csrf_enabled=False)
     
-    choices = [(str(x),x) for x in reversed(range(1900,2004))]
-    form.D_O_B.choices = choices
     if request.method == 'POST':
         
         if form.validate_on_submit():
@@ -99,6 +97,7 @@ def login():
 def measurements():
     connection = engine.connect()
     result = connection.execute("select measurement.measurement_name from measurement")
+    print result
     measurements = []
     for row in result:
         measurements.append(row['measurement_name'])

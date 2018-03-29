@@ -13,4 +13,4 @@ class SignUpForm(Form):
     email = StringField('Email',validators=[Required()])
     phone = StringField('Phone',validators=[Required()])
     password = PasswordField('Password',validators=[Required()])
-    D_O_B = SelectField('D_O_B',validators=[Required()])
+    D_O_B = StringField('D_O_B',validators=[Required()])
