@@ -4,13 +4,15 @@ Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
 Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
-
-from app import app,login_manager, db
+import os
+import time
+from app import app,login_manager, db, ALLOWED_EXTENSIONS
 from flask import render_template, request, redirect, url_for, flash,session,jsonify
 from flask_login import login_user, logout_user, current_user, login_required
-from forms import LoginForm, SignUpForm
+from forms import LoginForm, SignUpForm,RecipeForm
 from models import User
 from sqlalchemy import create_engine
+from werkzeug import secure_filename
 
 engine = create_engine('mysql://root:@localhost:3306/ultimate_meal_planner')
 
@@ -22,7 +24,11 @@ engine = create_engine('mysql://root:@localhost:3306/ultimate_meal_planner')
 def home():
     """Render website's home page."""
     return render_template('home.html')
-
+    
+@app.route('/viewMeal/')
+def viewMeal():
+    """Render website's home page."""
+    return render_template('viewMeal.html')
 
 @app.route('/about/')
 def about():
@@ -35,8 +41,62 @@ def mealplan():
     
 @app.route('/add_recipe',methods=['GET','POST'])
 def add_recipe():
-    return render_template('create_recipe.html')
-    
+    form = RecipeForm(request.form)
+    if request.method=="POST":
+        uploadedfile = request.files['uploadedfile']
+        if uploadedfile and allowed_file(uploadedfile.filename):
+            uploadedfilename = form.name.data + '_' + str(time.strftime("%Y-%m-%d-%H-%M-%S")) + "_" + secure_filename(uploadedfile.filename)
+            filepath = os.path.join(os.getcwd() + '/app/static/recipeImages/',uploadedfilename)
+            uploadedfile.save(filepath)
+        connection = engine.raw_connection()
+        cursor = connection.cursor()
+        cursor.callproc("AddRecipe", [str(form.name.data),str(uploadedfilename),str(form.preptime.data),str(form.cooktime.data),str(form.serving.data)])
+        result = cursor.fetchall()
+        cursor.close()
+        connection.commit()
+        firstconnection = engine.connect()
+        result = firstconnection.execute("SELECT MAX(recipe_id) FROM recipe LIMIT 1;")
+        for row in result:
+            iidd = row['MAX(recipe_id)']
+        firstconnection.close()
+        return redirect(url_for('recipes'))
+    else:
+        return render_template('create_recipe.html',form=form)
+        
+@app.route('/recipes', methods=["GET"])
+def recipes():
+    connection = engine.connect()
+    result = connection.execute("select * from recipe")
+    recipess = []
+    for row in result:
+        recipess.append(row)
+    recipes = [{"recipe_id":recipe.recipe_id,"recipe_name": recipe.recipe_name, "recipe_picture": recipe.recipe_picture, "prep_time": recipe.prep_time, "cook_time": recipe.cook_time,"servings":recipe.servings} for recipe in recipess]
+    if request.method == 'GET':
+        if result is not None:
+            return render_template("recipes.html", recipes=recipess)
+    else:
+        return redirect(url_for("home"))
+        
+@app.route('/recipe/<recipeid>', methods=['POST', 'GET'])
+def viewRecipe(recipeid):
+    connection = engine.raw_connection()
+    cursor = connection.cursor()
+    cursor.callproc("GetRecipe",[int(recipeid)])
+    print recipeid
+    result = cursor.fetchall()
+    cursor.close()
+    connection.commit()
+    recipe = []
+    for row in result:
+        recipe.append(row)
+    recipes = [{"recipe_id":rec.recipe_id,"recipe_name": rec.recipe_name, "recipe_picture": rec.recipe_picture, "prep_time": rec.prep_time, "cook_time": rec.cook_time,"servings":rec.servings} for rec in recipe]
+    print recipes
+    if request.method == 'GET':
+        if result is not None:
+            return render_template("recipes.html", recipes=recipe)
+    else:
+        return redirect(url_for("home"))
+        
 @app.route('/signup',methods=['GET' , 'POST'])
 def signup():
     form = SignUpForm(csrf_enabled=False)
@@ -76,7 +136,7 @@ def login():
             email = form.email.data
             password = form.password.data
             try:
-                result = User.query.filter_by(email=email).first()
+                result = User.query.filter_by(Password=password).first()
                 print result
                 if result is None:
                      flash('Invalid login credentials')
@@ -131,7 +191,10 @@ def logout():
     # Logout the user and end the session
     session.pop('logged_in', None)
     flash('You have been logged out.', 'danger')
-    return redirect(url_for('about'))    
+    return redirect(url_for('about'))   
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 # user_loader callback. This callback is used to reload the user object from
 # the user ID stored in the session

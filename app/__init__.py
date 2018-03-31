@@ -15,7 +15,7 @@ app.config['SECRET_KEY'] = 'THIS IS THE BEST KEY I EVER HAD'
 #mysql = MySQLdb.connect(HOST, USER, PASSWORD ,DATABASE)
 app.config['SQLALCHEMY_DATABASE_URI'] = "mysql://root:@localhost/"+DATABASE
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True # added just to suppress a warning
-
+ALLOWED_EXTENSIONS = set(['jpg', 'jpeg', 'gif','png'])
 db = SQLAlchemy(app)
 
 # Flask-Login login manager

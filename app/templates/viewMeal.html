@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block css %}
+    
+    
+    <link rel="stylesheet" href="/static/css/touchTouch.css">
+    <link rel="stylesheet" href="/static/css/style.css">
+{% endblock %}
+
+{% block js %}
+    <script src="js/jquery.js"></script>
+     <script src="js/jquery-migrate-1.1.1.js"></script>
+     <script src="js/jquery.equalheights.js"></script>
+     <script src="js/jquery.ui.totop.js"></script>
+     <script src="js/jquery.tabs.min.js"></script>
+     <script src="js/touchTouch.jquery.js"></script>
+     <script src="js/jquery.easing.1.3.js"></script>
+     <script>
+        $(document).ready(function(){
+
+          $().UItoTop({ easingType: 'easeOutQuart' });
+         $('.gallery a.gal').touchTouch();
+         
+       }) 
+     </script>
+{% endblock %}
+{% block main %}
+    
+     
+     <!--[if lt IE 8]>
+       <div style=' clear: both; text-align:center; position: relative;'>
+         <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+           <img src="http://storage.ie6countdown.com/assets/100/img/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." />
+         </a>
+
+    <![endif]-->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+      <link rel="stylesheet" media="screen" href="css/ie.css">
+    <![endif]-->
+    <!--[if lt IE 10]>
+      <script src="js/html5shiv.js"></script>
+      <link rel="stylesheet" media="screen" href="css/ie1.css">
+    <![endif]-->
+    
+
+<!--==============================Content=================================-->
+
+<div class="content"><div class="ic">More Website Templates @ TemplateMonster.com - December 02, 2013!</div>
+  <div class="container_12">
+    <div class="grid_12">
+      <h3 class="head2">Our Menu</h3>
+    </div>  
+    
+    <div class="tabs tb gallery">
+             <div class="div-nav  ">
+             <div class="grid_12">
+                 <ul class="nav">
+                     <li class="selected"><a href="#tab-1" class="">Sunday</a></li>
+                    <li><a href="#tab-2">Monday</a></li>
+                    <li><a href="#tab-3">Tuesday</a></li>
+                    <li><a href="#tab-4">Wednesday</a></li>
+                    <li><a href="#tab-5">Thursday</a></li>
+                    <li><a href="#tab-6">Friday</a></li>
+                 </ul>
+             </div>    
+             </div>
+             <div class="div-tabs">
+              <div  id="tab-1" class="tab-content gallery1">
+                  <div class="grid_3">
+                    <a href="/static/img/big1.jpg" class="gal"><img src="/static/img/page3_img1.jpg" alt=""><span></span></a>
+                    <div class="col2"><span class="col3"><a href="#">Cras facilisis</a></span> $ 19.99</div>
+                  </div>
+                  <div class="grid_3">
+                    <a href="/static/img/big2.jpg" class="gal"><img src="/static/img/page3_img2.jpg" alt=""><span></span></a>
+                    <div class="col2"><span class="col3"><a href="#">Phasellus erat </a></span> $ 21.99</div>
+                  </div>
+                  <div class="grid_3">
+                    <a href="/static/img/big3.jpg" class="gal"><img src="/static/img/page3_img3.jpg" alt=""><span></span></a>
+                    <div class="col2"><span class="col3"><a href="#">Kneras facilisis </a></span> $ 23.90</div>
+                  </div>
+                  <div class="grid_3">
+                    <a href="/static/img/big4.jpg" class="gal"><img src="/static/img/page3_img4.jpg" alt=""><span></span></a>
+                    <div class="col2"><span class="col3"><a href="#">Dert facilis</a></span> $ 25.30</div>
+                  </div>
+                  <div class="grid_3">
+                    <a href="/static/img/big5.jpg" class="gal"><img src="/static/img/page3_img5.jpg" alt=""><span></span></a>
+                    <div class="col2"><span class="col3"><a href="#">Destro fetolis </a></span> $ 10.99</div>
+                  </div>
+                  <div class="grid_3">
+                    <a href="/static/img/big6.jpg" class="gal"><img src="/static/img/page3_img6.jpg" alt=""><span></span></a>
+                    <div class="col2"><span class="col3"><a href="#">Holi erat </a></span> $ 20.99</div>
+                  </div>
+              </div>
+              <div  id="tab-2" class="tab-content gallery2">
+                 
+                  <div class="clear"></div>
+                  <div class="grid_3">
+                    <a href="/static/img/big5.jpg" class="gal"><img src="/static/img/page3_img5.jpg" alt=""><span></span></a>
+                    <div class="col2"><span class="col3"><a href="#">Destro fetolis </a></span> $ 10.99</div>
+                  </div>
+                  <div class="grid_3">
+                    <a href="/static/img/big6.jpg" class="gal"><img src="/static/img/page3_img6.jpg" alt=""><span></span></a>
+                    <div class="col2"><span class="col3"><a href="#">Holi erat </a></span> $ 20.99</div>
+                  </div>
+              </div>
+              <div  id="tab-3" class="tab-content gallery3">
+                  <div class="grid_3">
+                    <a href="/static/img/big1.jpg" class="gal"><img src="/static/img/page3_img1.jpg" alt=""><span></span></a>
+                    <div class="col2"><span class="col3"><a href="#">Cras facilisis</a></span> $ 19.99</div>
+                  </div>
+                  <div class="grid_3">
+                    <a href="/static/img/big2.jpg" class="gal"><img src="/static/img/page3_img2.jpg" alt=""><span></span></a>
+                    <div class="col2"><span class="col3"><a href="#">Phasellus erat </a></span> $ 21.99</div>
+                  </div>
+                  <div class="grid_3">
+                    <a href="/static/img/big3.jpg" class="gal"><img src="/static/img/page3_img3.jpg" alt=""><span></span></a>
+                    <div class="col2"><span class="col3"><a href="#">Kneras facilisis </a></span> $ 23.90</div>
+                  </div>
+                  <div class="grid_3">
+                    <a href="/static/img/big4.jpg" class="gal"><img src="/static/img/page3_img4.jpg" alt=""><span></span></a>
+                    <div class="col2"><span class="col3"><a href="#">Dert facilis</a></span> $ 25.30</div>
+                  </div>
+                 
+              </div>
+              <div  id="tab-4" class="tab-content gallery4">
+
+                  <div class="grid_3">
+                    <a href="/static/img/big2.jpg" class="gal"><img src="/static/img/page3_img2.jpg" alt=""><span></span></a>
+                    <div class="col2"><span class="col3"><a href="#">Phasellus erat </a></span> $ 21.99</div>
+                  </div>
+                  <div class="grid_3">
+                    <a href="/static/img/big3.jpg" class="gal"><img src="/static/img/page3_img3.jpg" alt=""><span></span></a>
+                    <div class="col2"><span class="col3"><a href="#">Kneras facilisis </a></span> $ 23.90</div>
+                  </div>
+                  <div class="grid_3">
+                    <a href="/static/img/big4.jpg" class="gal"><img src="/static/img/page3_img4.jpg" alt=""><span></span></a>
+                    <div class="col2"><span class="col3"><a href="#">Dert facilis</a></span> $ 25.30</div>
+                  </div>
+                  <div class="grid_3">
+                    <a href="/static/img/big5.jpg" class="gal"><img src="/static/img/page3_img5.jpg" alt=""><span></span></a>
+                    <div class="col2"><span class="col3"><a href="#">Destro fetolis </a></span> $ 10.99</div>
+                  </div>
+
+              </div>
+              <div  id="tab-5" class="tab-content gallery5">
+                  <div class="grid_3">
+                    <a href="/static/img/big1.jpg" class="gal"><img src="/static/img/page3_img1.jpg" alt=""><span></span></a>
+                    <div class="col2"><span class="col3"><a href="#">Cras facilisis</a></span> $ 19.99</div>
+                  </div>
+                  <div class="grid_3">
+                    <a href="/static/img/big2.jpg" class="gal"><img src="/static/img/page3_img2.jpg" alt=""><span></span></a>
+                    <div class="col2"><span class="col3"><a href="#">Phasellus erat </a></span> $ 21.99</div>
+                  </div>
+                 
+                  <div class="grid_3">
+                    <a href="/static/big5.jpg" class="gal"><img src="/static/img/page3_img5.jpg" alt=""><span></span></a>
+                    <div class="col2"><span class="col3"><a href="#">Destro fetolis </a></span> $ 10.99</div>
+                  </div>
+                  <div class="grid_3">
+                    <a href="/static/img/big6.jpg" class="gal"><img src="/static/img/page3_img6.jpg" alt=""><span></span></a>
+                    <div class="col2"><span class="col3"><a href="#">Holi erat </a></span> $ 20.99</div>
+                  </div>
+              </div>
+              <div  id="tab-6" class="tab-content gallery6">
+                  <div class="grid_3">
+                    <a href="/static/img/big1.jpg" class="gal"><img src="/static/img/page3_img1.jpg" alt=""><span></span></a>
+                    <div class="col2"><span class="col3"><a href="#">Cras facilisis</a></span> $ 19.99</div>
+                  </div>
+                  
+              </div>
+
+             </div>
+        </div>
+  </div>
+</div>
+
+<!--==============================footer=================================-->
+
+{% endblock %}

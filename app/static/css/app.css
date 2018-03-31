@@ -303,7 +303,7 @@ font-weight:100
 }
 .white_bg 
 {
-    background-color:#fff;
+    background-color:#e6a756;
 }
 
 .container 
@@ -413,5 +413,89 @@ h2
     opacity: 0;
 }
 
+.btn-ingredient
+{
+    background-color:rgba(47,23,15,.9);
+    color:#e6a756;
+    width:40%;
+}
 
-      
+body 
+{
+    padding-top: 5rem;
+    background-color: #e0f2fb;
+}
+.pro_pic
+{
+    width:90px;
+    height:90px;
+}
+
+.blk
+{
+    display: block;
+}
+
+.pro-data
+{
+    max-width: 100%;
+}
+
+.view-btn
+{
+    height: 30px;
+    width: 150px;
+    text-align: center;
+    border-radius: 7px;
+    color: white;
+}
+
+.profile
+{
+    margin-left: 15px;
+    width: 45%;
+    margin: 0 auto;
+    background-color: #e6a756;
+    padding: 5px;
+    margin-bottom: 1%;
+    box-shadow: 0px 2px 8px grey;
+}
+
+.profiles-container
+{
+    width: 50%;
+    height: 30%;
+}
+
+.view-profile a
+{
+    text-align: center;
+    display: block;
+    margin: 0 auto;
+}
+
+.form-container
+{
+    margin: 0 auto;
+    padding: 5px;
+    width: 45%;
+    background-color: #e6a756;
+}
+
+.border-style
+{
+    border-radius: 3px;
+    border-top: 3px #721c24 solid;
+}
+
+.title
+{
+    margin: 0 auto;
+    width: 45%;
+    margin-bottom: 1%;
+    font-weight: bold;
+    color:#e6a756;;
+}
+.btn-recipe{
+    background-color:#212529;
+}

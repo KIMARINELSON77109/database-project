@@ -7,12 +7,12 @@
                     <h2 class="nomargin_top">Create Recipe</h2>
                     <hr class="divider">
                 </div>
-                <form action="#" method="post" style="transform: none;">
+                <form action="{{ url_for('add_recipe') }}" method="post" enctype="multipart/form-data" style="transform: none;">
                     <div class="row" style="transform: none;">
                         <div class="col-md-8">
                             <div class="form-group">
                                 <label for="recipetitle">Recipe title</label>
-                                <input type="text" id="recipetitle" class="form-control" placeholder="Recipe title">
+                                {{form.name(class="form-control",placeholder="Recipe title")}}
                             </div>
                             <style>
                               .new_ingredient{
@@ -43,46 +43,44 @@
                                 </br>    
                             </div>
                             </br>
-                            <div class="btn btn-success" ng-click="add_ingredient()">Add New Ingredient</div>
+                            <div class="btn btn-ingredient" ng-click="add_ingredient()">Add New Ingredient</div>
                             </br>
                             </br>
                             <div ng-repeat="instr in instructions" >
     	                        <input class='form-control' />
                             </div>
                             </br>
-                                <div class="btn btn-success" ng-click="add_instruction()">Add Instruction</div>
+                                <div class="btn btn-ingredient" ng-click="add_instruction()">Add Instruction</div>
                         </div>
                         {% endraw %}
                         <aside class="col-md-4 sidebar sticky-sidebar" style="position: relative; overflow: visible; box-sizing: border-box; min-height: 1px;">
                             <div class="theiaStickySidebar" style="padding-top: 0px; padding-bottom: 1px; position: static; transform: none; top: 0px; left: 849.99px;">
                                 <div class="form-group">
                                     <div class="add-photo">
-                                        <label class="icon-picture gray">
-                                            <input type="file" name="picture" id="picture">
+                                        <label for="uploadedfile" type="file" class="icon-picture gray">
+                                            {{form.uploadedfile}}
                                         </label>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="preptime">Prep time</label>
-                                    <input type="text" id="preptime" class="form-control" placeholder="Prep time">
+                                    {{form.preptime(class="form-control",placeholder="Prep time")}}
                                 </div>
                                 <div class="form-group">
                                     <label for="cooktime">Cook time</label>
-                                    <input type="text" id="cooktime" class="form-control" placeholder="Cook time">
+                                    {{form.cooktime(class="form-control",placeholder="Cook time")}}
                                 </div>
                                 <div class="form-group">
                                     <label for="numberofservings">Number of servings</label>
-                                    <input type="text" id="numberofservings" class="form-control" placeholder="Number of servings">
-                                </div>
-                                <div class="form-group">
-                                    <div class="recipe-button">
-                                        <button type="button" class="btn btn-publish">Publish</button>
-                                        <button type="button" class="btn btn-save">Save</button>
-                                        <button type="button" class="btn btn-cancel">Cancel</button>
-                                    </div>
+                                    {{form.serving(class="form-control",placeholder="Number of servings")}}
                                 </div>
                             <div class="resize-sensor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; z-index: -1; visibility: hidden;"><div class="resize-sensor-expand" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; z-index: -1; visibility: hidden;"><div style="position: absolute; left: 0px; top: 0px; transition: 0s; width: 400px; height: 572px;"></div></div><div class="resize-sensor-shrink" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; z-index: -1; visibility: hidden;"><div style="position: absolute; left: 0; top: 0; transition: 0s; width: 200%; height: 200%"></div></div></div></div>    
                         </aside>
+                    </div>
+                    <div class="form-group">
+                        <div class="recipe-button">
+                            <{{ form.submit(class="btn btn-ingredient")}}
+                        </div>
                     </div>
                 </form>
             </div><!-- End container -->
