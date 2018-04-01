@@ -1,0 +1,72 @@
+body 
+{
+    padding-top: 5rem;
+    background-color: #e6a756;
+}
+
+.profilePic
+{
+    height: 150px;
+    width: 150px;
+}
+.profile-userbuttons .btn 
+{
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 15px;
+  margin-right: 5px;
+  width: 47%;
+}
+
+.profile-userbuttons .btn:last-child
+{
+  margin-right: 0px;
+}
+
+.layout
+{
+    padding-top: 30px;
+    padding-bottom:30px;
+    background-color: #e6a756;
+    border-radius: 5px;
+    border-top-color: #0080ff;
+    box-shadow: 0px 2px 8px grey;
+}
+
+p
+{
+    text-align: left;
+    font-family: "Verdana", Sans-serif;
+    color: #212529;
+    font-size: larger;
+}
+
+h1
+{
+    margin: 0 auto;
+    width: 45%;
+    margin-bottom: 1%;
+    font-weight: bold;
+    text-align: left;
+    
+}
+
+.border-style
+{
+    border-radius: 3px;
+    border-top: 3px #007bff solid;
+}
+
+.pos_title
+{
+  padding-left: 75px;
+}
+
+.bio
+{
+    padding-top: 25px;
+}
+#instr{
+    font-size: larger;
+}

@@ -1,31 +1,41 @@
 {% extends "base.html" %}
-{% block css %}
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}" type="text/css" />
-
-{% endblock %}
 
 
 {% block main %}
-<div class = "layout border-style">
-	<div class="modal-dialog">
-		<div class="span4 well">
-            <div class="row">
-        		    <img class = "profilePic"src="{{ url_for('static', filename='recipeImages/') }}"/>
-        		<div class="col pos_title">
-        			<h2><strong></strong></h2>
-                  	<p><i class="fa fa-envelope-o"></i> </p>
-                 </div>
-        	</div>
+<section class="page-section cta">
+      <div class="container">
+        <div class="row">
+          <div class="col-xl-9 mx-auto">
+            <div class="cta-inner text-center rounded">
+            {% for recipe in recipes %}
+              <h2 class="section-heading mb-5">
+                <span class="section-heading-lower">{{recipe[1]}}</span>
+              </h2>
+              <div class="span4 well">
+                <div class="row">
+            		    <img class = "profilePic"src="{{ url_for('static', filename='recipeImages/'+recipe[2])}}"/>
+            		<div class="col pos_title">
+            			<h2><strong></strong></h2>
+                      	<p>Preparation Time: {{recipe[3]}}</p>
+                      	<p>Cook Time: {{recipe[4]}}</p>
+                     </div>
+            	</div>
+             {% endfor %}
         	<div class="bio">
-                    <p class="text-left"><strong>About Me: </strong></p>
+        	   <p class="text-left"><strong>Ingredients: </strong></p>
+        	   {% for  ingred in ingreds%}
+        		    <div class="text-left" id="instr">{{ingred[0]}} {{ingred[1]}} {{ingred[2]}}</div>
+    			{% endfor %}
+    			</br>
+                <p class="text-left"><strong>Instructions: </strong></p>
+                {% for  instr in instrs%}
+        		    <div class="text-left" id="instr">{{instr[0]}}. {{instr[1]}}</div>
+    			{% endfor %}
         	</div>
-        	<div class="profile-userbuttons">
-        	    <center>
-					<button type="button" class="btn btn-success btn-sm">Send messaage</button>
-					<button type="button" class="btn btn-primary btn-sm">follow</button>
-				</center>
-			</div>
-	</div>
-</div>
+	        </div>
+         </div>
+        </div>
+       </div>
+      </div>
+    </section>
 {% endblock %}

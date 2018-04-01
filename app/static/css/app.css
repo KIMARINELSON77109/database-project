@@ -499,3 +499,9 @@ body
 .btn-recipe{
     background-color:#212529;
 }
+.profilePic
+{
+    vertical-align: middle;
+    border-style: none;
+    padding-left: 30px;
+}

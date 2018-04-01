@@ -12,7 +12,7 @@
                     </div>
                 <div class="view-profile center col bio">
                     </br>
-                    <a class="view-btn btn-recipe" href="{{ url_for('viewRecipe', recipeid=recipe['recipe_id']) }}">View Recipe</a>
+                    <a class="view-btn btn-recipe" href="{{ url_for('recipedetails', recipeid=recipe['recipe_id']) }}">View Recipe</a>
                 </div>
             </div>
         {% endfor %}

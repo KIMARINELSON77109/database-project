@@ -9,7 +9,7 @@ import time
 from app import app,login_manager, db, ALLOWED_EXTENSIONS
 from flask import render_template, request, redirect, url_for, flash,session,jsonify
 from flask_login import login_user, logout_user, current_user, login_required
-from forms import LoginForm, SignUpForm,RecipeForm
+from forms import LoginForm, SignUpForm,RecipeForm,GenPlanForm
 from models import User
 from sqlalchemy import create_engine
 from werkzeug import secure_filename
@@ -35,68 +35,19 @@ def about():
     """Render the website's about page."""
     return render_template('about.html')
 
-@app.route('/mealPlan',methods=['GET','POST'])
-def mealplan():
-    return render_template('meal_plan.html')
+@app.route('/generateMealPlan',methods=['GET','POST'])
+def GenMealPlan():
+    form = GenPlanForm(csrf_enabled=False)
     
-@app.route('/add_recipe',methods=['GET','POST'])
-def add_recipe():
-    form = RecipeForm(request.form)
-    if request.method=="POST":
-        uploadedfile = request.files['uploadedfile']
-        if uploadedfile and allowed_file(uploadedfile.filename):
-            uploadedfilename = form.name.data + '_' + str(time.strftime("%Y-%m-%d-%H-%M-%S")) + "_" + secure_filename(uploadedfile.filename)
-            filepath = os.path.join(os.getcwd() + '/app/static/recipeImages/',uploadedfilename)
-            uploadedfile.save(filepath)
-        connection = engine.raw_connection()
-        cursor = connection.cursor()
-        cursor.callproc("AddRecipe", [str(form.name.data),str(uploadedfilename),str(form.preptime.data),str(form.cooktime.data),str(form.serving.data)])
-        result = cursor.fetchall()
-        cursor.close()
-        connection.commit()
-        firstconnection = engine.connect()
-        result = firstconnection.execute("SELECT MAX(recipe_id) FROM recipe LIMIT 1;")
-        for row in result:
-            iidd = row['MAX(recipe_id)']
-        firstconnection.close()
-        return redirect(url_for('recipes'))
-    else:
-        return render_template('create_recipe.html',form=form)
-        
-@app.route('/recipes', methods=["GET"])
-def recipes():
-    connection = engine.connect()
-    result = connection.execute("select * from recipe")
-    recipess = []
-    for row in result:
-        recipess.append(row)
-    recipes = [{"recipe_id":recipe.recipe_id,"recipe_name": recipe.recipe_name, "recipe_picture": recipe.recipe_picture, "prep_time": recipe.prep_time, "cook_time": recipe.cook_time,"servings":recipe.servings} for recipe in recipess]
-    if request.method == 'GET':
-        if result is not None:
-            return render_template("recipes.html", recipes=recipess)
-    else:
-        return redirect(url_for("home"))
-        
-@app.route('/recipe/<recipeid>', methods=['POST', 'GET'])
-def viewRecipe(recipeid):
-    connection = engine.raw_connection()
-    cursor = connection.cursor()
-    cursor.callproc("GetRecipe",[int(recipeid)])
-    print recipeid
-    result = cursor.fetchall()
-    cursor.close()
-    connection.commit()
-    recipe = []
-    for row in result:
-        recipe.append(row)
-    recipes = [{"recipe_id":rec.recipe_id,"recipe_name": rec.recipe_name, "recipe_picture": rec.recipe_picture, "prep_time": rec.prep_time, "cook_time": rec.cook_time,"servings":rec.servings} for rec in recipe]
-    print recipes
-    if request.method == 'GET':
-        if result is not None:
-            return render_template("recipes.html", recipes=recipe)
-    else:
-        return redirect(url_for("home"))
-        
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            calorie = form.calorie.data
+            return redirect(url_for(''))
+    return render_template('gen_meal_plan.html',form=form)
+    
+#-------------------------------------------------------------------------------
+#                           SIGN UP
+#-------------------------------------------------------------------------------
 @app.route('/signup',methods=['GET' , 'POST'])
 def signup():
     form = SignUpForm(csrf_enabled=False)
@@ -126,7 +77,10 @@ def signup():
             render_template('signup.html' , form=form)
     else:
         return render_template('signup.html', form=form)
-    
+ 
+#-------------------------------------------------------------------------------
+#                           LOGIN
+#-------------------------------------------------------------------------------  
 @app.route('/login' , methods=['GET' , 'POST'])
 def login():
     form = LoginForm(csrf_enabled=False)
@@ -153,6 +107,54 @@ def login():
     else:
         return render_template('login.html', form=form)
 
+#-------------------------------------------------------------------------------
+#                           ADD RECIPE
+#------------------------------------------------------------------------------- 
+@app.route('/add_recipe',methods=['GET','POST'])
+def add_recipe():
+    form = RecipeForm(request.form)
+    if request.method=="POST":
+        uploadedfile = request.files['uploadedfile']
+        if uploadedfile and allowed_file(uploadedfile.filename):
+            uploadedfilename = form.name.data + '_' + str(time.strftime("%Y-%m-%d-%H-%M-%S")) + "_" + secure_filename(uploadedfile.filename)
+            filepath = os.path.join(os.getcwd() + '/app/static/recipeImages/',uploadedfilename)
+            uploadedfile.save(filepath)
+        connection = engine.raw_connection()
+        cursor = connection.cursor()
+        cursor.callproc("AddRecipe", [str(form.name.data),str(uploadedfilename),str(form.preptime.data),str(form.cooktime.data),str(form.serving.data)])
+        result = cursor.fetchall()
+        cursor.close()
+        connection.commit()
+        firstconnection = engine.connect()
+        result = firstconnection.execute("SELECT MAX(recipe_id) FROM recipe LIMIT 1;")
+        for row in result:
+            iidd = row['MAX(recipe_id)']
+        print iidd
+        firstconnection.close()
+        return redirect(url_for('recipes'))
+    else:
+        return render_template('create_recipe.html',form=form)
+        
+#-------------------------------------------------------------------------------
+#                           VIEW ALL RECIPES
+#-------------------------------------------------------------------------------          
+@app.route('/recipes', methods=["GET"])
+def recipes():
+    connection = engine.connect()
+    result = connection.execute("select * from recipe")
+    recipess = []
+    for row in result:
+        recipess.append(row)
+    recipes = [{"recipe_id":recipe.recipe_id,"recipe_name": recipe.recipe_name, "recipe_picture": recipe.recipe_picture, "prep_time": recipe.prep_time, "cook_time": recipe.cook_time,"servings":recipe.servings} for recipe in recipess]
+    if request.method == 'GET':
+        if result is not None:
+            return render_template("recipes.html", recipes=recipess)
+    else:
+        return redirect(url_for("home"))
+
+#-------------------------------------------------------------------------------
+#            GET MEASUREMENTS FROM DB AND SENDS JSON OBJECT TO RECIPE FORM
+#------------------------------------------------------------------------------- 
 @app.route('/measurements',methods=["GET"])
 def measurements():
     connection = engine.connect()
@@ -163,17 +165,50 @@ def measurements():
         measurements.append(row['measurement_name'])
     connection.close()
     return jsonify({"measurements":measurements})
-    
+
+#-------------------------------------------------------------------------------
+#            GET INGREDIENTS FROM DB AND SENDS JSON OBJECT TO RECIPE FORM
+#-------------------------------------------------------------------------------     
 @app.route('/ingredients',methods=["GET"])
 def ingredients():
     connection = engine.connect()
-    result = connection.execute("select * from ingredient")
+    result = connection.execute("select * from ingredients")
     ingredients = []
     for row in result:
         if row['ingredient_id'] != 96:
             ingredients.append(row['ingredient_name'])
     connection.close()
     return jsonify({"ingredients":ingredients})
+
+#-------------------------------------------------------------------------------
+#            VIEW DETAILS OF INDIVIDUAL RECIPES
+#------------------------------------------------------------------------------- 
+@app.route('/recipedetails/<recipeid>',methods=["GET"])
+def recipedetails(recipeid):
+    connection = engine.raw_connection()
+    cursor = connection.cursor()
+    cursor.callproc("GetRecipeById",[str(recipeid)])
+    result = cursor.fetchall()
+    cursor.close()
+    cursor = connection.cursor()
+    cursor.callproc("recipeinstruction",[str(recipeid)])
+    result_instr = cursor.fetchall()
+    cursor.close()
+    cursor = connection.cursor()
+    cursor.callproc("GetIngrMeasurFromRecipe",[str(recipeid)])
+    result_ingred = cursor.fetchall()
+    cursor.close()
+    connection.commit()
+    ingred = []
+    recipes = []
+    instr = []
+    for row in result:
+        recipes.append(row)
+    for row in result_instr:
+        instr.append(row)
+    for row in result_ingred:
+        ingred.append(row)
+    return render_template("recipe.html",recipes=recipes, instrs=instr,ingreds=ingred)
     
 # @app.route('/generate_mealplan',methods=["GET"])
 # def newMealPlan():

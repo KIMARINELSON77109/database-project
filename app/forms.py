@@ -23,3 +23,7 @@ class RecipeForm(Form):
     cooktime = StringField("Cook Time",validators=[Required()])
     instruction = StringField("instruction",validators=[Required()])
     submit = SubmitField("Submit")
+    
+class GenPlanForm(Form):
+    calorie = StringField("Enter a calorie count")
+    submit = SubmitField("Generate Plan")

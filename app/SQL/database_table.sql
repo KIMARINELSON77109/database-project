@@ -65,14 +65,6 @@ create table instruction
 		primary key (instruction_id,recipe_id),
 		foreign key (recipe_id) references recipe(recipe_id) ON DELETE RESTRICT
 	)ENGINE=INNODB;
-	
-drop table if exists meal_type;
-create table meal_type
-(
-	meal_type_id	  int not null auto_increment,
-	meal_type		  varchar(10) UNIQUE not null,
-	primary key(meal_type_id)
-) ENGINE=INNODB;
 
 drop table if exists diet;
 create table diet
@@ -86,7 +78,7 @@ create table diet
 drop table if exists meal_plan;
 create table meal_plan
 (
-	mealplan_id		  int not null UNIQUE auto_increment,
+	mealplan_id		  int not null auto_increment,
 	end_date          date not null,
 	PRIMARY key(mealplan_id)
 ) ENGINE=INNODB;
@@ -133,18 +125,6 @@ create table makes
 	FOREIGN key (recipe_id) REFERENCES recipe(recipe_id) on update cascade on delete restrict
 )ENGINE=INNODB;
 
-drop table if exists needs;
-create table needs
-(
-	ingredient_id         int not null,
-	recipe_id             int not null,
-	quantity			  FLOAT not null,
-	measurement_id		  int not null,
-	primary key (ingredient_id,recipe_id),
-	FOREIGN key (ingredient_id) REFERENCES ingredient(ingredient_id) on delete restrict,
-	FOREIGN key (recipe_id) REFERENCES recipe(recipe_id) on delete restrict,
-	foreign key(measurement_id) references measurement(measurement_id) ON DELETE RESTRICT
-)ENGINE=INNODB;
 
 drop table if exists contains;
 create table contains
@@ -154,4 +134,28 @@ create table contains
 	primary key(meal_id,mealplan_id),
 	FOREIGN key(mealplan_id) REFERENCES meal_plan(mealplan_id) on DELETE RESTRICT,
 	FOREIGN key(meal_id) REFERENCES meal(meal_id) on DELETE RESTRICT
+)ENGINE=INNODB;
+
+/*drop table if exists instruction;*/
+create table instruction
+(
+	instruction_id  int not null auto_increment,
+	recipe_id       int not null,
+	step_num        int not null,
+	direction       varchar(100),
+	primary key (instruction_id,recipe_id),
+	foreign key (recipe_id) references recipe(recipe_id) ON DELETE RESTRICT
+)ENGINE=INNODB;
+
+/*drop table if exists needs;*/
+create table needs
+(
+	ingredient_id         int not null,
+	recipe_id             int not null,
+	quantity			  FLOAT not null,
+	measurement_id		  int not null,
+	primary key (ingredient_id,recipe_id),
+	FOREIGN key (ingredient_id) REFERENCES ingredients(ingredient_id) on delete restrict,
+	FOREIGN key (recipe_id) REFERENCES recipe(recipe_id) on delete restrict,
+	foreign key(measurement_id) references measurement(measurement_id) ON DELETE RESTRICT
 )ENGINE=INNODB;
