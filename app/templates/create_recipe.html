@@ -28,31 +28,88 @@
                               }
                             </style>
                             {% raw %}
-                            <div ng-repeat="ingr in ingredient" class="new_ingredient ng-scope">
-    	                       <input class='form-control'/>
+                            <div class="new_ingredient ng-scope">
+    	                       <input class='form-control' placeholder="Quantity"/>
                                     <select class='form-control'>
                                         <option ng-repeat="measurement in measurements">
                                     		  {{ measurement }}
                                     	</option>
                                     </select>
                                     <select class='form-control'>
-                                        <option ng-repeat="instr in ingredients">
-                                            {{ instr }}
+                                        <option ng-repeat="ingred in ingredients">
+                                            {{ ingred }}
+                                        </option>
+                                    </select>
+                                </br>    
+                            </div>
+                            <div class="new_ingredient ng-scope">
+    	                       <input class='form-control' placeholder="Quantity"/>
+                                    <select class='form-control'>
+                                        <option ng-repeat="measurement in measurements">
+                                    		  {{ measurement }}
+                                    	</option>
+                                    </select>
+                                    <select class='form-control'/>
+                                        <option ng-repeat="ingred in ingredients">
+                                            {{ ingred }}
+                                        </option>
+                                    </select>
+                                </br>    
+                            </div>
+                            <div class="new_ingredient ng-scope">
+    	                       <input class='form-control' placeholder="Quantity"/>
+                                    <select class='form-control'/>
+                                        <option ng-repeat="measurement in measurements">
+                                    		  {{ measurement }}
+                                    	</option>
+                                    </select>
+                                    <select class='form-control'>
+                                        <option ng-repeat="ingred in ingredients">
+                                            {{ ingred }}
+                                        </option>
+                                    </select>
+                                </br>    
+                            </div>
+                            <div class="new_ingredient ng-scope">
+    	                       <input class='form-control' placeholder="Quantity"/>
+                                    <select class='form-control'>
+                                        <option ng-repeat="measurement in measurements">
+                                    		  {{ measurement }}
+                                    	</option>
+                                    </select>
+                                    <select class='form-control'>
+                                        <option ng-repeat="ingred in ingredients">
+                                            {{ ingred }}
                                         </option>
                                     </select>
                                 </br>    
                             </div>
                             </br>
-                            <div class="btn btn-ingredient" ng-click="add_ingredient()">Add New Ingredient</div>
+                            {% endraw %}
                             </br>
                             </br>
-                            <div ng-repeat="instr in instructions" >
-    	                        <input class='form-control' />
+                            <div >
+                                <div class="form-group">
+    	                            {{form.instruction1(class='form-control',placeholder='instruction1')}}
+    	                        </div>
+    	                        <div class="form-group">
+    	                            {{form.instruction2(class='form-control',placeholder='instruction2')}}
+    	                        </div>
+    	                        <div class="form-group">
+    	                            {{form.instruction3(class='form-control',placeholder='instruction3')}}
+    	                        </div>
+    	                        <div class="form-group">
+    	                            {{form.instruction4(class='form-control',placeholder='instruction4')}}
+    	                        </div>
+    	                        <center>
+    	                        <div class="form-group">
+                                    <div class="recipe-button">
+                                        {{form.submit(class="btn btn-ingredient")}}
+                                    </div>
+                                </div>
+                                </center>
                             </div>
-                            </br>
-                                <div class="btn btn-ingredient" ng-click="add_instruction()">Add Instruction</div>
                         </div>
-                        {% endraw %}
                         <aside class="col-md-4 sidebar sticky-sidebar" style="position: relative; overflow: visible; box-sizing: border-box; min-height: 1px;">
                             <div class="theiaStickySidebar" style="padding-top: 0px; padding-bottom: 1px; position: static; transform: none; top: 0px; left: 849.99px;">
                                 <div class="form-group">
@@ -74,14 +131,14 @@
                                     <label for="numberofservings">Number of servings</label>
                                     {{form.serving(class="form-control",placeholder="Number of servings")}}
                                 </div>
+                                <div class="form-group">
+                                    <label for="diet type">Number of servings</label>
+                                    {{form.diettype(class="form-control",placeholder="Vegan, Vegetarian, Diabetic or Classic")}}
+                                </div>
                             <div class="resize-sensor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; z-index: -1; visibility: hidden;"><div class="resize-sensor-expand" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; z-index: -1; visibility: hidden;"><div style="position: absolute; left: 0px; top: 0px; transition: 0s; width: 400px; height: 572px;"></div></div><div class="resize-sensor-shrink" style="position: absolute; left: 0; top: 0; right: 0; bottom: 0; overflow: hidden; z-index: -1; visibility: hidden;"><div style="position: absolute; left: 0; top: 0; transition: 0s; width: 200%; height: 200%"></div></div></div></div>    
                         </aside>
                     </div>
-                    <div class="form-group">
-                        <div class="recipe-button">
-                            <{{ form.submit(class="btn btn-ingredient")}}
-                        </div>
-                    </div>
+                    </br>
                 </form>
             </div><!-- End container -->
         </div>

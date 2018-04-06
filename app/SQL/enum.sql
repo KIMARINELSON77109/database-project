@@ -64,3 +64,7 @@ INSERT INTO meal_plan (mealplan_id, end_date) VALUES(5, "1990-06-05");
 INSERT INTO meal_plan (mealplan_id, end_date) VALUES(6, "2014-06-06");
 INSERT INTO meal_plan (mealplan_id, end_date) VALUES(7, "1986-02-07");
 INSERT INTO meal_plan (mealplan_id, end_date) VALUES(8, "2003-10-17");
+
+insert into contains(mealplan_id,meal_id) values (1,20);
+insert into contains(mealplan_id,meal_id) values (1,31); 
+insert into contains(mealplan_id,meal_id) values (1,10);

@@ -13,6 +13,7 @@ from forms import LoginForm, SignUpForm,RecipeForm,GenPlanForm
 from models import User
 from sqlalchemy import create_engine
 from werkzeug import secure_filename
+from datetime import date
 
 engine = create_engine('mysql://root:@localhost:3306/ultimate_meal_planner')
 
@@ -25,10 +26,10 @@ def home():
     """Render website's home page."""
     return render_template('home.html')
     
-@app.route('/viewMeal/')
-def viewMeal():
+@app.route('/genMealPlan/')
+def genMealPlan():
     """Render website's home page."""
-    return render_template('viewMeal.html')
+    return render_template('genMealPlan.html')
 
 @app.route('/about/')
 def about():
@@ -121,16 +122,23 @@ def add_recipe():
             uploadedfile.save(filepath)
         connection = engine.raw_connection()
         cursor = connection.cursor()
-        cursor.callproc("AddRecipe", [str(form.name.data),str(uploadedfilename),str(form.preptime.data),str(form.cooktime.data),str(form.serving.data)])
+        cursor.callproc("AddRecipe", [str(form.name.data),str(uploadedfilename),str(form.preptime.data),str(form.cooktime.data),str(form.serving.data),str(form.diettype.data)])
         result = cursor.fetchall()
         cursor.close()
         connection.commit()
-        firstconnection = engine.connect()
-        result = firstconnection.execute("SELECT MAX(recipe_id) FROM recipe LIMIT 1;")
-        for row in result:
-            iidd = row['MAX(recipe_id)']
-        print iidd
-        firstconnection.close()
+        maxconnection = engine.raw_connection()
+        cur = maxconnection.cursor()
+        cur.execute("SELECT MAX(recipe_id) FROM recipe")
+        maxid = cur.fetchone()
+        rid = maxid[0]
+        cur.close()
+        
+        secondconnection = engine.connect()
+        secondconnection.execute("INSERT INTO instruction (recipe_id,step_num,direction) VALUES ({0}, {1}, '{2}')".format(rid,1,form.instruction1.data))
+        secondconnection.execute("INSERT INTO instruction (recipe_id,step_num,direction) VALUES ({0}, {1}, '{2}')".format(rid,2,form.instruction2.data))
+        secondconnection.execute("INSERT INTO instruction (recipe_id,step_num,direction) VALUES ({0}, {1}, '{2}')".format(rid,3,form.instruction3.data))
+        secondconnection.execute("INSERT INTO instruction (recipe_id,step_num,direction) VALUES ({0}, {1}, '{2}')".format(rid,4,form.instruction4.data))
+        secondconnection.close()
         return redirect(url_for('recipes'))
     else:
         return render_template('create_recipe.html',form=form)
@@ -138,19 +146,24 @@ def add_recipe():
 #-------------------------------------------------------------------------------
 #                           VIEW ALL RECIPES
 #-------------------------------------------------------------------------------          
-@app.route('/recipes', methods=["GET"])
+@app.route('/recipes', methods=["GET","POST"])
 def recipes():
-    connection = engine.connect()
-    result = connection.execute("select * from recipe")
-    recipess = []
+    form = RecipeForm(request.form)
+    connection = engine.raw_connection()
+    cursor = connection.cursor()
+    cursor.callproc("GetRecipesLike",[str(form.name.data)])
+    result = cursor.fetchall()
+    cursor.close()
+    connection.commit()
+    recipes = []
     for row in result:
-        recipess.append(row)
-    recipes = [{"recipe_id":recipe.recipe_id,"recipe_name": recipe.recipe_name, "recipe_picture": recipe.recipe_picture, "prep_time": recipe.prep_time, "cook_time": recipe.cook_time,"servings":recipe.servings} for recipe in recipess]
-    if request.method == 'GET':
+        recipes.append(row)
+    print recipes
+    if request.method == 'POST':
         if result is not None:
-            return render_template("recipes.html", recipes=recipess)
+            return render_template("recipes.html", form=form, recipes=recipes)
     else:
-        return redirect(url_for("home"))
+        return render_template("recipes.html",form=form)
 
 #-------------------------------------------------------------------------------
 #            GET MEASUREMENTS FROM DB AND SENDS JSON OBJECT TO RECIPE FORM
@@ -210,16 +223,74 @@ def recipedetails(recipeid):
         ingred.append(row)
     return render_template("recipe.html",recipes=recipes, instrs=instr,ingreds=ingred)
     
-# @app.route('/generate_mealplan',methods=["GET"])
-# def newMealPlan():
-#     firstconnection = engine.connect()
-#     result = firstconnection.execute("select mealplanday.mealplanday_id from mealplanday")
-#     mealplandays = []
-#     for row in result:
-#         mealplandays.append(row['mealplanday_id'])
-#     firstconnection.close()
-#     return render_template("meal_plan.html")
+#-------------------------------------------------------------------------------
+#            VIEW DETAILS OF INDIVIDUAL RECIPES
+#-------------------------------------------------------------------------------     
+@app.route('/generate_mealplan',methods=["GET"])
+def newMealPlan():
+    firstconnection = engine.connect()
+    result = firstconnection.execute("select meal.meal_id from meal")
+    meal = []
+    for row in result:
+        meal.append(row['meal_id'])
+    firstconnection.close()
+    connection = engine.raw_connection()
+    cur = connection.cursor()
+    cur.execute("SELECT MAX(mealplan_id) FROM meal_plan")
+    maxid = cur.fetchone()
+    rid = maxid[0]
+    cur.close()
+    maxconnection = engine.raw_connection()
+    cur = maxconnection.cursor()
+    cur.execute("insert into contains(mealPlan_id, meal_id) VALUES ({0},{1})".format(rid,meal[0]))
+    cur.close()
+    return render_template('genMealPlan.html')
+
+#-------------------------------------------------------------------------------
+#            VIEW DETAILS OF INDIVIDUAL RECIPES
+#-------------------------------------------------------------------------------  
+@app.route('/getmealplanmeals/<mtype>', methods=["GET","POST"])
+def getmealplanmeals(mtype):
+    if request.method=="GET":
+        connection = engine.raw_connection()
+        cursor = connection.cursor()
+
+        cursor.callproc("GetWeekmealsByType",[str(mtype)])
+        result = cursor.fetchall()
+        print result
+        cursor.close()
+        connection.commit()
+        meals = []
+        for row in result:
+            meals.append(row)
+        print meals
+        return jsonify({"meals":meals})
+
+@app.route('/meals/<meal_id>', methods=["GET"])
+def meals(meal_id):
+    connection = engine.raw_connection()
+    cursor = connection.cursor()
+    cursor.callproc("GetMealRecipe",[int(meal_id)])
+    result = cursor.fetchall()
+    recipes = []
+    for row in result:
+        recipes.append(row)
+    return jsonify({"recipes":recipes})
     
+@app.route("/shoppingList/",methods=["POST","GET"])
+def shoppingList():
+    try:
+        if request.method == "GET":
+            connection = engine.connection()
+            result = connection.execute("SELECT ingredient.name, needs.quantity FROM  mealplan JOIN generates JOIN meal JOIN recipe ingredient WHERE ingredient.name NOT IN (SELECT * FROM KITCHEN)")
+            List = []
+            for row in result:
+                List.append(row)
+            connection.close()
+            return render_template("shoppingList.html", lst=List)
+    except Exception as e:
+        return(str(e))   
+
 @app.route("/logout")
 @login_required
 def logout():

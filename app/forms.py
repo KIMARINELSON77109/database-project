@@ -21,7 +21,11 @@ class RecipeForm(Form):
     serving = StringField("Serving",validators=[Required()])
     preptime = StringField("Preparation Time",validators=[Required()])
     cooktime = StringField("Cook Time",validators=[Required()])
-    instruction = StringField("instruction",validators=[Required()])
+    instruction1 = StringField("instruction",validators=[Required()])
+    instruction2 = StringField("instruction",validators=[Required()])
+    instruction3 = StringField("instruction",validators=[Required()])
+    instruction4 = StringField("instruction",validators=[Required()])
+    diettype = StringField("diet type",validators=[Required()])
     submit = SubmitField("Submit")
     
 class GenPlanForm(Form):

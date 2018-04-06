@@ -66,14 +66,6 @@ create table instruction
 		foreign key (recipe_id) references recipe(recipe_id) ON DELETE RESTRICT
 	)ENGINE=INNODB;
 
-drop table if exists diet;
-create table diet
-(
-	diet_type_id	  int not null auto_increment,
-	diet_type		  varchar(10) UNIQUE not null,
-	primary key(diet_type_id)
-) ENGINE=INNODB;
-
 
 drop table if exists meal_plan;
 create table meal_plan
@@ -97,7 +89,7 @@ drop table if exists meal;
 create table meal
 (
  	meal_id			  int not null auto_increment,
- 	meal_name		  varchar(15) not null,
+ 	meal_name		  varchar(255) not null,
  	meal_type		  varchar(10) not null,
 	num_calorie       int not null,
 	day               varchar(10) not null,
@@ -136,7 +128,7 @@ create table contains
 	FOREIGN key(meal_id) REFERENCES meal(meal_id) on DELETE RESTRICT
 )ENGINE=INNODB;
 
-/*drop table if exists instruction;*/
+drop table if exists instruction;
 create table instruction
 (
 	instruction_id  int not null auto_increment,
@@ -159,3 +151,12 @@ create table needs
 	FOREIGN key (recipe_id) REFERENCES recipe(recipe_id) on delete restrict,
 	foreign key(measurement_id) references measurement(measurement_id) ON DELETE RESTRICT
 )ENGINE=INNODB;
+
+CREATE TABLE kitchen(
+user_id               INT NOT NULL,
+ingredient_id         int not null,
+quantity              int not null,
+PRIMARY KEY(user_id,ingredient_id),
+FOREIGN KEY(user_id) references user(user_id) on update cascade on delete cascade,
+FOREIGN key (ingredient_id) REFERENCES ingredients(ingredient_id) on delete restrict,
+);
