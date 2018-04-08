@@ -22,7 +22,7 @@ create table recipe
 	recipe_name	     varchar(120) not null,
 	recipe_picture   varchar(99) not null,
 	prep_time	     varchar(12) not null,
-	cook_time        varchar(10) not null,
+	cook_time        varchar(12) not null,
 	servings         int not null,
 	diet_type        varchar(10) not null,
 	primary key(recipe_id)
@@ -92,7 +92,6 @@ create table meal
  	meal_name		  varchar(255) not null,
  	meal_type		  varchar(10) not null,
 	num_calorie       int not null,
-	day               varchar(10) not null,
  	primary key(meal_id)
 ) ENGINE=INNODB;
 
@@ -128,18 +127,8 @@ create table contains
 	FOREIGN key(meal_id) REFERENCES meal(meal_id) on DELETE RESTRICT
 )ENGINE=INNODB;
 
-drop table if exists instruction;
-create table instruction
-(
-	instruction_id  int not null auto_increment,
-	recipe_id       int not null,
-	step_num        int not null,
-	direction       varchar(100),
-	primary key (instruction_id,recipe_id),
-	foreign key (recipe_id) references recipe(recipe_id) ON DELETE RESTRICT
-)ENGINE=INNODB;
 
-/*drop table if exists needs;*/
+drop table if exists needs;
 create table needs
 (
 	ingredient_id         int not null,
@@ -152,11 +141,23 @@ create table needs
 	foreign key(measurement_id) references measurement(measurement_id) ON DELETE RESTRICT
 )ENGINE=INNODB;
 
-CREATE TABLE kitchen(
-user_id               INT NOT NULL,
-ingredient_id         int not null,
-quantity              int not null,
-PRIMARY KEY(user_id,ingredient_id),
-FOREIGN KEY(user_id) references user(user_id) on update cascade on delete cascade,
-FOREIGN key (ingredient_id) REFERENCES ingredients(ingredient_id) on delete restrict,
-);
+
+drop table if exists kitchen;
+CREATE TABLE kitchen
+(
+	user_id               INT NOT NULL,
+	ingredient_id         int not null,
+	quantity              int not null,
+	PRIMARY KEY(user_id,ingredient_id),
+	FOREIGN KEY(user_id) references user(user_id) on update cascade on delete cascade,
+	FOREIGN key (ingredient_id) REFERENCES ingredients(ingredient_id) on delete restrict
+)ENGINE=INNODB;
+
+drop table if exists allergic_reaction;
+CREATE TABLE allergic_reaction
+(
+	profile_id            INT Not null,
+	ingredient_id         int not null,
+	FOREIGN key (ingredient_id) REFERENCES ingredients(ingredient_id) on delete restrict,
+	FOREIGN key (profile_id) REFERENCES profile(profile_id) on delete restrict
+)ENGINE=INNODB;

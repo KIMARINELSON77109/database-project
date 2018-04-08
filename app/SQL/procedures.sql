@@ -36,7 +36,8 @@ DELIMITER //
 CREATE PROCEDURE GetIngrMeasurFromRecipe(IN id INT)
 BEGIN (
         SELECT needs.quantity, measurement.measurement_name, ingredients.ingredient_name FROM needs join measurement on needs.measurement_id=measurement.measurement_id JOIN ingredients ON
-        needs.ingredient_id=ingredients.ingredient_id
+        needs.ingredient_id=ingredients.ingredient_id join recipe on needs.recipe_id=recipe.recipe_id where recipe.recipe_id = id
+        
       );
 END //
 DELIMITER ;
@@ -68,13 +69,12 @@ END //
 DELIMITER ;
 
 
-DELIMITER //
-CREATE PROCEDURE GetRecipesLike(IN name VARCHAR(120))
-BEGIN (
-    "SELECT ingredient.name, needs.quantity, measurement.measurement_name FROM  mealplan JOIN contains on contains.mealplan_id = mealplan.mealplan_id on meal.meal_id = contains.meal_id join makes on makes.meal_id=meal.meal_id join recipe on recipe.recipe_id=makes.recipe_id 
-join needs on needs.recipe_id=recipe.recipe_id join measurement on needs.measurement_id=measurement.measurement_id JOIN ingredients ON 
-needs.ingredient_id=ingredients.ingredient_id WHERE ingredient.ingredient_name NOT IN (SELECT * FROM kitchen)
-);
-END //
-DELIMITER ;
-FROM 
+-- DELIMITER //
+-- CREATE PROCEDURE shoppingList(IN name VARCHAR(120))
+-- BEGIN (
+--     "SELECT ingredient.name, needs.quantity, measurement.measurement_name FROM  mealplan JOIN contains on contains.mealplan_id = mealplan.mealplan_id on meal.meal_id = contains.meal_id join makes on makes.meal_id=meal.meal_id join recipe on recipe.recipe_id=makes.recipe_id 
+-- join needs on needs.recipe_id=recipe.recipe_id join measurement on needs.measurement_id=measurement.measurement_id JOIN ingredients ON 
+-- needs.ingredient_id=ingredients.ingredient_id WHERE ingredient.ingredient_name NOT IN (SELECT * FROM kitchen)
+-- );
+-- END //
+-- DELIMITER ;

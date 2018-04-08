@@ -36,15 +36,6 @@ def about():
     """Render the website's about page."""
     return render_template('about.html')
 
-@app.route('/generateMealPlan',methods=['GET','POST'])
-def GenMealPlan():
-    form = GenPlanForm(csrf_enabled=False)
-    
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            calorie = form.calorie.data
-            return redirect(url_for(''))
-    return render_template('gen_meal_plan.html',form=form)
     
 #-------------------------------------------------------------------------------
 #                           SIGN UP
@@ -92,13 +83,13 @@ def login():
             password = form.password.data
             try:
                 result = User.query.filter_by(Password=password).first()
-                print result
                 if result is None:
                      flash('Invalid login credentials')
                      return render_template('login.html', form=form)
                 else:
                     login_user(result)
                     session['logged_in'] = True
+
                     flash('You were logged in', 'success')
                     return redirect(url_for('home'))
             except Exception as e:
@@ -144,7 +135,7 @@ def add_recipe():
         return render_template('create_recipe.html',form=form)
         
 #-------------------------------------------------------------------------------
-#                           VIEW ALL RECIPES
+#                           SEARCH FOR A RECIPE
 #-------------------------------------------------------------------------------          
 @app.route('/recipes', methods=["GET","POST"])
 def recipes():
@@ -233,6 +224,7 @@ def newMealPlan():
     meal = []
     for row in result:
         meal.append(row['meal_id'])
+    print meal
     firstconnection.close()
     connection = engine.raw_connection()
     cur = connection.cursor()
@@ -254,16 +246,13 @@ def getmealplanmeals(mtype):
     if request.method=="GET":
         connection = engine.raw_connection()
         cursor = connection.cursor()
-
         cursor.callproc("GetWeekmealsByType",[str(mtype)])
         result = cursor.fetchall()
-        print result
         cursor.close()
         connection.commit()
         meals = []
         for row in result:
             meals.append(row)
-        print meals
         return jsonify({"meals":meals})
 
 @app.route('/meals/<meal_id>', methods=["GET"])
@@ -276,6 +265,23 @@ def meals(meal_id):
     for row in result:
         recipes.append(row)
     return jsonify({"recipes":recipes})
+    
+@app.route("/kitchen",methods= ["GET","POST"])
+def viewKitchen():
+    try:
+        if request.method == 'GET':
+            connection = engine.raw_connection()
+            cursor = connection.cursor()
+            cursor.execute("select quantity, ingredient_name from kitchen join user on user.user_id=kitchen.user_id join ingredients on ingredients.ingredient_id=kitchen.ingredient_id where user.user_id = 2")
+            result = cursor.fetchall()
+            print result
+            kitIngred = []
+            for row in result:
+                kitIngred.append(row)
+            return render_template("kitchen.html",kitchen=kitIngred)
+    except Exception as e:
+        return(str(e)) 
+    
     
 @app.route("/shoppingList/",methods=["POST","GET"])
 def shoppingList():
@@ -306,7 +312,7 @@ def allowed_file(filename):
 # the user ID stored in the session
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(user_id)
+    return User.query.get(int(user_id))
 
 ###
 # The functions below should be applicable to all Flask apps.

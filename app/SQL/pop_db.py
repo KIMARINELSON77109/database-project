@@ -1,10 +1,12 @@
 from random import randint, sample
 from faker import Factory
+from datetime import date
 
-NUM_USERS = 100
-NUM_RECIPES = 500
-
-
+NUM_USERS = 10
+NUM_RECIPES = 10
+MEALPLANS= 10
+MEALS=35
+NUM_INGRED = 50
 ingredient_list = """asparagus
 apples
 avacado
@@ -100,7 +102,6 @@ Italian bread
 jambalaya
 jelly / jam
 jerky
-jalapeño
 kale
 kabobs
 ketchup
@@ -209,165 +210,180 @@ BASE_INSERT = "INSERT INTO {} ({}) VALUES({});"
 def add_quotes(word):
 	return "\"" + word + "\""
 
-
 def generate_user():
 	f = open("db_data.sql", "w")
 	table = "user"
 	fields = ['firstname','lastname', 'D_O_B','email', 'phone','password']
 	for x in range(NUM_USERS):
 		fake.seed(x)
-		vals = [add_quotes(fake.first_name()), add_quotes(fake.last_name()), add_quotes(fake.date()),add_quotes(fake.email()), add_quotes(fake.phone_number()), add_quotes("password")]
+		vals = [add_quotes(fake.first_name()), add_quotes(fake.last_name()), add_quotes(fake.date()),add_quotes(fake.email()), add_quotes(fake.phone_number()), add_quotes("password123")]
 
 		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
 	f.close()
-
-def generate_kitchen():
-   f = open("db_data.sql", "w")
-   table = "kitchen"
-   fields = [ "user_id","ingredient_id","quantity"]
-   for x in range(1,6):
-            for x in range(1, NUM_USERS):
-                quan = randint(2,9)
-                ingrd = randint(1,NUM_INGRED)
-                vals = [str(x), str(ingrd),str(quan)]
+def generate_profile():
+        f = open("db_data.sql", "a+")
+        table = "profile"
+        fields = ['user_id','profile_id','diet_type']
+        diets = ["Classic","Vegetarian","Vegan","Diabetic"]
+        for x in range(1,NUM_USERS-1):
+                diet = str(diets[randint(0,3)])
+                vals = [str(x),str(x),add_quotes(diet)]
                 f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
-   f.close()
-
-
-def generate_ingr():
-	f = open("db_data.sql", "a+")
-	table = "ingredient"
-	fields = ['ingredient_name', 'ingredient_type',]
-	types = ['meat', 'gluten', 'poultry', 'shellfish', 'fish', 'nuts', 'dairy', 'pork', 'beef', 'wheat']
-	ingredients = ingredient_list.split("\n")
-	for x in range(len(ingredients)):
-		vals = [add_quotes(ingredients[x]), add_quotes(types[randint(0,9)])]
-		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
-	f.close()
-
-
+        f.close()             
+                
 def generate_recipe():
 	f = open("db_data.sql", "a+")
 	table = "recipe"
-	fields = ["recipe_name","recipe_type", "recipe_preptime", "recipe_image","recipe_serving", "recipe_creationdate", "recipe_caloriecount"]
-	image = add_quotes("https://assets-cdn.github.com/images/modules/logos_page/Octocat.png")
+	fields = ["recipe_name", "recipe_picture", "prep_time","cook_time", "servings", "diet_type"]
+	image = add_quotes("Kimari Nelson_2018-04-04-03-59-45_pexels-photo-247685.png")
+	diets = ["Classic","Vegetarian","Vegan","Diabetic"]
 	recipes = recipe_names.split("\n")
-	types = ["Breakfast", "Lunch", "Dinner", "Snack"]
-	for x in range(len(recipes)):
-		preptime = str(randint(10, 250))
-		calories = str(randint(250, 2000))
+	for x in range(1,NUM_RECIPES + 1):
+		preptime = str(randint(10, 60))+" "+"Minutes"
+		cooktime = str(randint(10, 120))+" "+"Minutes"
 		serving = str(randint(1,5))
-		rec_type = add_quotes(types[randint(0,3)])
-		recipe = add_quotes(recipes[x].strip())
-		vals = [recipe, rec_type, preptime, image, serving, add_quotes(fake.date()), calories]
+		diet = str(diets[randint(0,3)])
+		recipe = add_quotes(recipes[randint(1,50)])
+		vals = [recipe,image, add_quotes(preptime),add_quotes(cooktime),serving,add_quotes(diet)]
 		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
-	for x in range(NUM_RECIPES-len(recipes)):
-		fake.seed(x)
-		preptime = str(randint(10, 250))
-		calories = str(randint(250, 2000))
-		serving = str(randint(1,5))
-		recipe = add_quotes(fake.word())
-		rec_type = add_quotes(types[randint(0,3)])
-		vals = [recipe, rec_type, preptime, image, serving, add_quotes(fake.date()), calories]
-		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
-	f.close()
-
-def generate_instr():
-	verbs = ['Add', 'adjust', 'arrange', 'bake', 'baste', 'batter', 'beat', 'blend', 'boil', 'braise', 'break', 'broil', 'brush', 'burn', 'carve', 'chill', 'chop', 'clarify', 'crack', 'cook', 'cool', 'cover', 'cut', 'Debone', 'dice', 'discard', 'drain', 'dress', 'fillet', 'flour', 'fold', 'freeze', 'fry', 'garnish', 'glaze', 'grate', 'grind', 'grill', 'gut', 'heat', 'knead', 'Lower', 'macerate', 'marinate', 'mash', 'melt', 'mince', 'mix', 'parboil', 'peel', 'pickle', 'place', 'poach', 'pour', 'prepare', 'put', 'reduce', 'refrigerate', 'remove', 'rinse', 'roast', 'roll out', 'roll up', 'rub', 'Salt', 'saut\xc3\xa9', 'scoop', 'scorch', 'scramble', 'season', 'serve', 'set', 'simmer', 'skim', 'slice', 'soak', 'spice', 'spoon', 'spread', 'sprinkle', 'squeeze', 'steam', 'stir', 'strain', 'sugar', 'sweeten', 'taste', 'thaw', 'thicken', 'toast', 'try', 'warm', 'wash', 'water down', 'whip', 'whisk', 'wipe']
-
-	ingredients = ingredient_list.split("\n")
-	table = "instruction"
-	fields = ["instruction_details"]
-	instruction_format = "{} the {} for {} minutes."
-	f = open("db_data.sql", "a+")
-	for verb in verbs:
-		for ingredient in ingredients:
-			vals = [add_quotes(instruction_format.format(verb, ingredient, mins))]
-			f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals)) + "\n")
-
-	f.close()
-
-def generate_recipe_instr():
-	f = open("db_data.sql", "a+")
-	table = "follow_instruction"
-	fields = ["recipe_id", "instruction_id","instruction_order"]
-	for x in range(1, NUM_RECIPES - 1):
-		insts = randint(2,9)
-		used = set([])
-		for y in range(insts):
-			while True:
-				inst = randint(1, 12610)
-				if inst in used:
-					continue
-				else:
-					vals = [str(x), str(inst), str(y+1)]
-					used.add(inst)
-					f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals)) + "\n")
-					break
-
 	f.close()
 
 def generate_ingr_rec():
 	f = open("db_data.sql", "a+")
-	table = "use_ingredients"
-	fields = [ "recipe_id", "ingredient_id", "measurement_id", "ingredient_quantity"]
+	table = "needs"
+	fields = ["ingredient_id", "recipe_id","measurement_id", "quantity"]
 	for x in range(1, NUM_RECIPES + 1):
-		ingrs = randint(1,7)
+		ingrs = randint(3,4)
 		used = set([])
-
+		rec_used = set([])
 		for y in range(ingrs):
 			meas = randint(1,9)
-			quantity = randint(1,1000) / 10.0
+			quantity = randint(1,10)
 			while True:
-				ingr = randint(1, 130)
-				if ingr in used:
+				ingr = randint(1,120)
+				if ingr in used and x in rec_used:
 					continue
 				else:
-					vals = [str(x), str(ingr), str(meas), str(quantity)]
+					vals = [str(ingr), str(x), str(meas), str(quantity)]
 					used.add(ingr)
+					rec_used.add(x)
 					f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals)) + "\n")
 					break
 	f.close()
 
-MEALPLANS= 10
-MEALPLANDAYS=35
-
-def generate_mealplanday():
-	f = open("db_data.sql","a+")
-	table = "mealplanday"
-	fields = ["day","mealtype","caloriecount"]
-	types = ["Breakfast", "Lunch", "Dinner", "Snack"]
-	days =["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday"]
-	for x in range(0,MEALPLANDAYS-1):
-		mealtype = add_quotes(types[randint(0,3)])
-		mealdays = add_quotes(days[randint(0,6)])
-		vals = [mealdays,mealtype]
+def generate_ingr():
+	f = open("db_data.sql", "a+")
+	table = "ingredients"
+	fields = ['ingredient_name']
+	ingredients = ingredient_list.split("\n")
+	for x in range(len(ingredients)):
+		vals = [add_quotes(ingredients[x])]
 		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
 	f.close()
 
+def generate_instr():
+   verbs = ['Add', 'slice', 'season', 'rub', 'cut']
 
+   ingredients = ingredient_list.split("\n")
+   table = "instruction"
+   fields = ["recipe_id","step_num","direction"]
+   instruction_format = "{} the {}"
+   f = open("db_data.sql", "a+")
+   for x in range(1, NUM_RECIPES + 1):
+                num_instr = randint(4,5)
+                instruction = []
+                for y in range(num_instr):
+                        for ingredient in ingredients:
+                                instruction.append(add_quotes(instruction_format.format(verbs[randint(0,4)], ingredient)))
+                        instru = str(instruction[randint(0,120)])
+                        vals = [str(x),str(y+1),instru]
+                        f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals)) + "\n")
+   f.close()
+def add_recipe():
+        table = "add_recipe"
+        fields = ["user_id","recipe_id","date_created"]
+        f = open("db_data.sql", "a+")
+        for x in range(1, NUM_RECIPES + 1):
+                user = randint(1, NUM_USERS)
+                year = 2018
+                month = randint(1, 12)
+                day = randint(1, 28)
+                date_add = date(year, month, day)
+                vals = [str(user),str(x),str(date_add)]
+                f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals)) + "\n")
+        f.close()
 
-def generate_mealplan():
+def generate_makes():
+        table = "makes"
+        fields = ["meal_id","recipe_id"]
+        f = open("db_data.sql", "a+")
+        for x in range(1, MEALS):
+                rec = randint(1, NUM_RECIPES)
+                vals = [str(x),str(rec)]
+                f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals)) + "\n")
+        f.close()
+                
+def generate_meal():
+	recipes = recipe_names.split("\n")
 	f = open("db_data.sql","a+")
-	table = "mealplan"
+	table = "meal"
+	fields = ["meal_name","meal_type","num_calorie"]
+	types = ["Breakfast", "Lunch", "Dinner"]
+	for x in range(0,MEALS-1):
+		name = add_quotes(recipes[x].strip())
+		mealtype = add_quotes(types[randint(0,2)])
+		calories = str(randint(250, 2000))
+		vals = [name,mealtype,calories]
+		f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
 	f.close()
-
-
+def generate_mealplan():
+        f = open("db_data.sql","a+")
+        table = "meal_plan"
+        fields = ["mealplan_id","end_date"]
+        for x in range(1,MEALPLANS):
+                year = 2018
+                month = randint(1, 12)
+                day = randint(1, 28)
+                end_date = date(year, month, day)
+                vals = [str(x),str(end_date)]
+                f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals)) + "\n")
+        f.close()
+	
 def generate_planmeal():
 	f = open("db_data.sql","a+")
-	table = "plan_meal_day"
-	fields =["mealplan_id","mealplanday_id"]
-	for x in range(0,MEALPLANS-1):
-		mealplandays = randint(1,MEALPLANDAYS)
+	table = "contains"
+	fields =["mealplan_id","meal_id"]
+	for x in range(1,MEALPLANS):
+		mealplandays = randint(1,MEALS)
 		for y in range(mealplandays):
 			vals = [str(x),str(mealplandays)]
 			f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals)) + "\n")
 			break
 	f.close()
-
-generate_user(NUM_USERS)
+	
+def generate_kitchen():
+   f = open("db_data.sql", "a+")
+   table = "kitchen"
+   fields = [ "user_id","ingredient_id","quantity"]
+   for x in range(1,6):
+                for x in range(1, NUM_USERS):
+                        quan = randint(2,9)
+                        ingrd = randint(1,NUM_INGRED)
+                        vals = [str(x), str(ingrd),str(quan)]
+                        f.write(BASE_INSERT.format(table, ", ".join(fields), ", ".join(vals))+"\n")
+   f.close()
+# to do ---  profile, makes
+generate_user()
+generate_profile()
 generate_recipe()
 generate_ingr()
-generate_instr()
 generate_ingr_rec()
-generate_recipe_instr()
+add_recipe()
+generate_instr()
+generate_meal()
+generate_makes()
+generate_mealplan()
+generate_planmeal()
+generate_kitchen()
+
+
